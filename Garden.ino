@@ -1,5 +1,9 @@
-"""This is an indoor Garden"""
+void setup() {
+  // put your setup code here, to run once:
 
-funtion waterthing():
-    """Water the thing"""
-    # do stuff
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
