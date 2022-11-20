@@ -5,7 +5,7 @@
 #include <Wire.h>
 //Set the button to a pin
 int button = 6;
-//Checks if the button is HIGH or LOW
+//Variable to check if the button is HIGH or LOW
 int buttonState = 0;
 
 
