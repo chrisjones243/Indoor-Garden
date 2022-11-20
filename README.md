@@ -1,2 +1,2 @@
-# Arduino Indoor Garde
- This is an indoor garden
+# I2C 
+ This is to test I2C communication between the arduinos
