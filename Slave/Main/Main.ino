@@ -1,7 +1,8 @@
 // This will contain the main code for the slave device
 // and will be used to process the outputs using data from the master device.
-#include <Wire.h>
-#include <Arduino.h>
+
+#include <Wire.h> //Access the Wire library
+#include <Arduino.h> //Access the Arduino library
 
 
 int lightPin = 13;
