@@ -2,7 +2,7 @@
 // and will be used to process the outputs using data from the master device.
 #include <Wire.h>
 #include <Arduino.h>
-// #include <string>
+
 
 int lightPin = 13;
 int pumpPin = 12;
