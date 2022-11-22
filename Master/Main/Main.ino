@@ -3,10 +3,22 @@
 
 //Access the Wire library
 #include <Wire.h>
-//Set the button to a pin
-int button = 6;
-//Variable to check if the button is HIGH or LOW
-int buttonState = 0;
+
+int button = 6; //Set the button to a pin
+int buttonState = 0; //Variable to check if the button is HIGH or LOW
+
+// NOTE: When transmitting data, to the slave device, the master device will need to send these values:
+// LS[boolean] = lightState, the state of the light
+// PS[boolean] = pumpState, the state of the pump
+// LV[int] = lightval, the value of the light
+// MV[int] = moistureval, the value of the moisture
+// 
+// e.g.
+// LS1 = lightState is true, and will turn on the light on
+// PS0 = pumpState is false, and will turn off the pump
+// LV100 = lightval is 100, and will display the value 100 on the LCD
+// 
+// **Can code on slave-output branch**
 
 
 void setup() {
