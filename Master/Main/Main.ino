@@ -4,9 +4,9 @@
 //Access the Wire library
 #include <Wire.h>
 
-int button = 6; //Set the button to a pin
-int buttonState = 0; //Variable to check if the button is HIGH or LOW
-int lightPin = 0; //Sets the photoresistor to a pin
+int button = 6; // Set the button to a pin
+int buttonState = 0; // Variable to check if the button is HIGH or LOW
+int lightPin = 0; // Sets the photoresistor to a pin
 
 int time = 0; //Time in seconds
 
@@ -25,25 +25,45 @@ int time = 0; //Time in seconds
 
 
 void setup() {
-  //Starts I2C communication
+  // Starts I2C communication
   Wire.begin();
 }
 
 void loop() {
-  readLightLevel();
+  transmitLightLevel(readLightLevel());
+  checkLightLevel();
   delay(1000);
   time ++; 
   }
 
-void readLightLevel(){
-    if (time % 10 == 0){
+int readLightLevel(){
       int lightLevel = analogRead(lightPin);
       lightLevel = map(lightLevel, 0, 1000, 0, 100);
       lightLevel = constrain(lightLevel, 0, 100);
+      return lightLevel;
+}
 
+void transmitLightLevel(int reading){
+  Wire.beginTransmission(8);
+  Wire.write("LV");
+  Wire.write(reading);
+  Wire.endTransmission();
+}
+
+void checkLightLevel(){
+  if(time % 10 == 0){
+    int threshold = 20;
+    if(readLightLevel() <= 20){
       Wire.beginTransmission(8);
       Wire.write("LS");
-      Wire.write(lightLevel);
+      Wire.write(1);
       Wire.endTransmission();
+    }
+    else{
+      Wire.beginTransmission(8);
+      Wire.write("LS");
+      Wire.write(0);
+      Wire.endTransmission();
+    }
   }
 }
