@@ -1,14 +1,43 @@
-// Code from the WCRS Website https://wcrsyyc.github.io/ardx/circ09.html
-int lightPin = 0; 
-int ledPin = 9;
-void setup()
-{
-  pinMode(ledPin, OUTPUT); //sets the led pin to output
+// This will contain the main code for the master device
+// and will be used to process the inputs and send the data to the slave device.
+
+//Access the Wire library
+#include <Wire.h>
+
+int button = 6; //Set the button to a pin
+int buttonState = 0; //Variable to check if the button is HIGH or LOW
+int lightpin = 0; //Sets the photoresistor to a pin
+
+int time = 0; //Time in seconds
+
+// NOTE: When transmitting data, to the slave device, the master device will need to send these values:
+// LS[boolean] = lightState, the state of the light
+// PS[boolean] = pumpState, the state of the pump
+// LV[int] = lightval, the value of the light
+// MV[int] = moistureval, the value of the moisture
+// 
+// e.g.
+// LS1 = lightState is true, and will turn on the light on
+// PS0 = pumpState is false, and will turn off the pump
+// LV100 = lightval is 100, and will display the value 100 on the LCD
+// 
+// **Can code on slave-output branch**
+
+
+void setup() {
+  //Sets button to input
+  pinMode(button, INPUT);
+  //Starts I2C communication
+  Wire.begin();
 }
 
-void loop()
-{
-  int lightLevel = analogRead(lightPin);
-  lightLevel = map(lightLevel, 0, 1000, 0, 100);
-  lightLevel = constrain(lightLevel, 0, 100);
+void loop() {
+  if (time % 5 == 0){
+    int lightLevel = analogRead(lightPin);
+    lightLevel = map(lightLevel, 0, 1000, 0, 100);
+    lightLevel = constrain(lightLevel, 0, 100);
+  }
+  delay(1000);
+  time ++; 
+  }
 }
