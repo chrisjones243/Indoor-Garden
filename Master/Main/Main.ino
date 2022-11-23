@@ -30,7 +30,7 @@ void setup() {
 }
 
 void loop() {
-  transmitLightLevel(readLightLevel());
+  transmit("LV", readLightLevel());
   checkLightLevel();
   delay(1000);
   time ++; 
@@ -43,27 +43,22 @@ int readLightLevel(){
       return lightLevel;
 }
 
-void transmitLightLevel(int reading){
-  Wire.beginTransmission(8);
-  Wire.write("LV");
-  Wire.write(reading);
-  Wire.endTransmission();
-}
 
 void checkLightLevel(){
   if(time % 10 == 0){
     int threshold = 20;
     if(readLightLevel() <= 20){
-      Wire.beginTransmission(8);
-      Wire.write("LS");
-      Wire.write(1);
-      Wire.endTransmission();
+      transmit("LS", 1)
     }
     else{
-      Wire.beginTransmission(8);
-      Wire.write("LS");
-      Wire.write(0);
-      Wire.endTransmission();
+      transmit("LS", 0);
     }
   }
+}
+
+void transmit(char mode[], int value){
+  Wire.beginTransmission(8);
+      Wire.write(mode);
+      Wire.write(value);
+      Wire.endTransmission();
 }
