@@ -9,7 +9,6 @@ void setup()
 void loop()
 {
   int lightLevel = analogRead(lightPin);
-  lightLevel = map(lightLevel, 0, 900, 0, 255);
-  lightLevel = constrain(lightLevel, 0, 255);
-  analogWrite(ledPin, lightLevel);
+  lightLevel = map(lightLevel, 0, 1000, 0, 100);
+  lightLevel = constrain(lightLevel, 0, 100);
 }
