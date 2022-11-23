@@ -25,19 +25,23 @@ int time = 0; //Time in seconds
 
 
 void setup() {
-  //Sets button to input
-  pinMode(button, INPUT);
   //Starts I2C communication
   Wire.begin();
 }
 
 void loop() {
-  if (time % 5 == 0){
+  if (time % 10 == 0){
     int lightLevel = analogRead(lightPin);
     lightLevel = map(lightLevel, 0, 1000, 0, 100);
     lightLevel = constrain(lightLevel, 0, 100);
+    Wire.beginTransmission(8);
+    Wire.write("LS");
+    Wire.write(lightLevel);
+    Wire.endTransmission();
   }
   delay(1000);
   time ++; 
   }
 }
+
+def readLightLevel
