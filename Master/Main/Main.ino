@@ -6,7 +6,7 @@
 
 int button = 6; //Set the button to a pin
 int buttonState = 0; //Variable to check if the button is HIGH or LOW
-int lightpin = 0; //Sets the photoresistor to a pin
+int lightPin = 0; //Sets the photoresistor to a pin
 
 int time = 0; //Time in seconds
 
@@ -30,18 +30,20 @@ void setup() {
 }
 
 void loop() {
-  if (time % 10 == 0){
-    int lightLevel = analogRead(lightPin);
-    lightLevel = map(lightLevel, 0, 1000, 0, 100);
-    lightLevel = constrain(lightLevel, 0, 100);
-    Wire.beginTransmission(8);
-    Wire.write("LS");
-    Wire.write(lightLevel);
-    Wire.endTransmission();
-  }
+  readLightLevel();
   delay(1000);
   time ++; 
   }
-}
 
-def readLightLevel
+void readLightLevel(){
+    if (time % 10 == 0){
+      int lightLevel = analogRead(lightPin);
+      lightLevel = map(lightLevel, 0, 1000, 0, 100);
+      lightLevel = constrain(lightLevel, 0, 100);
+
+      Wire.beginTransmission(8);
+      Wire.write("LS");
+      Wire.write(lightLevel);
+      Wire.endTransmission();
+  }
+}
