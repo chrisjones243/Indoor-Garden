@@ -4,7 +4,7 @@
 //Access the Wire library
 #include <Wire.h>
 
-int lightPin = 0; // Sets the photoresistor to a pin
+int moisturePin = 0; // Sets the photoresistor to a pin
 int time = 0; // Keeps track of how many seconds has passed
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
@@ -28,9 +28,7 @@ void setup() {
 
 // Each loop in the program is called every second
 void loop() {
-  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
-  transmit("LV", readLightLevel()); // Transmits the light level to the slave
-  checkLightLevel();
+  readMoistureLevel()
   delay(1000);
   time ++; 
   }
@@ -43,24 +41,6 @@ void transmit(char mode[], int value){
       Wire.endTransmission();
 }
 
-// Returns the light level detected by the arduino from 0 to 100
-int readLightLevel(){
-      int lightLevel = analogRead(lightPin);
-      lightLevel = map(lightLevel, 0, 1000, 0, 100);
-      lightLevel = constrain(lightLevel, 0, 100);
-      return lightLevel;
-}
-
-// Communicates the slave to switch the light bulb on or off depending on the light level
-void checkLightLevel(){
-  // Only checks the light level every 10 seconds 
-  if(time % 10 == 0){
-    int threshold = 20;
-    if(readLightLevel() <= 20){
-      transmit("LS", 1);
-    }
-    else{
-      transmit("LS", 0);
-    }
-  }
+void readMoistureLevel(){
+  int 
 }
