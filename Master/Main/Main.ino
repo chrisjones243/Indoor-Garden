@@ -4,10 +4,7 @@
 //Access the Wire library
 #include <Wire.h>
 
-int button = 6; // Set the button to a pin
-int buttonState = 0; // Variable to check if the button is HIGH or LOW
 int lightPin = 0; // Sets the photoresistor to a pin
-
 int time = 0; // Keeps track of how many seconds has passed
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
