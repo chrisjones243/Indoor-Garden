@@ -25,9 +25,8 @@ int time = 0; // Keeps track of how many seconds has passed
 
 
 void setup() {
-  // Starts I2C communication
-  Wire.begin();
-  Serial.begin(9600);
+  Wire.begin(); // Starts I2C communication
+  Serial.begin(9600); // Serial communication
 }
 
 // Each loop in the program is called every second
@@ -47,7 +46,7 @@ void transmit(char mode[], int value){
       Wire.endTransmission();
 }
 
-// return the light level detected by the arduino from 0 to 100
+// Returns the light level detected by the arduino from 0 to 100
 int readLightLevel(){
       int lightLevel = analogRead(lightPin);
       lightLevel = map(lightLevel, 0, 1000, 0, 100);
