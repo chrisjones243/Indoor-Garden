@@ -30,6 +30,7 @@ void setup() {
 void loop() {
   Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
   transmit("LV", readLightLevel()); // Transmits the light level to the slave
+  Serial.println(readLightLevel());
   checkLightLevel();
   delay(1000);
   time ++; 
