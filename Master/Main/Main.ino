@@ -4,7 +4,7 @@
 //Access the Wire library
 #include <Wire.h>
 
-int moisturePin = 0; // Sets the photoresistor to a pin
+int moisturePin = 1; // Sets the photoresistor to a pin
 int time = 0; // Keeps track of how many seconds has passed
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
@@ -28,7 +28,7 @@ void setup() {
 
 // Each loop in the program is called every second
 void loop() {
-  readMoistureLevel()
+  readMoistureLevel();
   delay(1000);
   time ++; 
   }
@@ -36,11 +36,13 @@ void loop() {
 //Transmits the command mode and the value to the slave
 void transmit(char mode[], int value){
   Wire.beginTransmission(8);
-      Wire.write(mode);
-      Wire.write(value);
-      Wire.endTransmission();
+  Wire.write(mode);
+  Wire.write(value);
+  Wire.endTransmission();
 }
 
 void readMoistureLevel(){
-  int 
+  int moistureLevel = analogRead(moisturePin);
+  Serial.println(moistureLevel);
+  
 }
