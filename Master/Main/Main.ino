@@ -49,5 +49,6 @@ int readMoistureLevel(){
   Serial.println(moistureLevel);
   moistureLevel = map(moistureLevel, 0, 1000, 0, 100);
   moistureLevel = constrain(moistureLevel, 0, 100);
+  Serial.println(moistureLevel);
   return moistureLevel;
 }
