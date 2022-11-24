@@ -4,8 +4,8 @@
 //Access the Wire library
 #include <Wire.h>
 
-int button = 6; //Set the button to a pin
-int buttonState = 0; //Variable to check if the button is HIGH or LOW
+int lightPin = 0; // Sets the photoresistor to a pin
+int time = 0; // Keeps track of how many seconds has passed
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
 // LS[boolean] = lightState, the state of the light
@@ -22,24 +22,45 @@ int buttonState = 0; //Variable to check if the button is HIGH or LOW
 
 
 void setup() {
-  //Sets button to input
-  pinMode(button, INPUT);
-  //Starts I2C communication
-  Wire.begin();
+  Wire.begin(); // Starts I2C communication
+  Serial.begin(9600); // Serial communication
 }
 
+// Each loop in the program is called every second
 void loop() {
-  buttonState = digitalRead(button);
-  if (buttonState == HIGH){
-    //Transmits the integer 1 in bytes to the slave arduino
-    Wire.beginTransmission(8);
-    Wire.write(1);
-    Wire.endTransmission();
+  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
+  transmit("LV", readLightLevel()); // Transmits the light level to the slave
+  checkLightLevel();
+  delay(1000);
+  time ++; 
   }
-  else{
-    //Transmits the integer 0 in bytes to the slave arduino
-    Wire.beginTransmission(8);
-    Wire.write(0);
-    Wire.endTransmission();
+
+//Transmits the command mode and the value to the slave
+void transmit(char mode[], int value){
+  Wire.beginTransmission(8);
+      Wire.write(mode);
+      Wire.write(value);
+      Wire.endTransmission();
+}
+
+// Returns the light level detected by the arduino from 0 to 100
+int readLightLevel(){
+      int lightLevel = analogRead(lightPin);
+      lightLevel = map(lightLevel, 0, 1000, 0, 100);
+      lightLevel = constrain(lightLevel, 0, 100);
+      return lightLevel;
+}
+
+// Communicates the slave to switch the light bulb on or off depending on the light level
+void checkLightLevel(){
+  // Only checks the light level every 10 seconds 
+  if(time % 10 == 0){
+    int threshold = 20;
+    if(readLightLevel() <= 20){
+      transmit("LS", 1);
+    }
+    else{
+      transmit("LS", 0);
+    }
   }
 }
