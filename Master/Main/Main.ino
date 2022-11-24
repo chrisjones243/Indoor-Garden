@@ -4,7 +4,9 @@
 //Access the Wire library
 #include <Wire.h>
 
+
 int lightPin = 0; // Sets the photoresistor to a pin
+int moisturePin = 1; // Sets the photoresistor to a pin
 int time = 0; // Keeps track of how many seconds has passed
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
@@ -29,7 +31,9 @@ void setup() {
 // Each loop in the program is called every second
 void loop() {
   Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
+  transmit("MV", readMoistureLevel());
   transmit("LV", readLightLevel()); // Transmits the light level to the slave
+  checkMoistureLevel();
   checkLightLevel();
   delay(1000);
   time ++; 
@@ -38,10 +42,11 @@ void loop() {
 //Transmits the command mode and the value to the slave
 void transmit(char mode[], int value){
   Wire.beginTransmission(8);
-      Wire.write(mode);
-      Wire.write(value);
-      Wire.endTransmission();
+  Wire.write(mode);
+  Wire.write(value);
+  Wire.endTransmission();
 }
+
 
 // Returns the light level detected by the arduino from 0 to 100
 int readLightLevel(){
@@ -54,13 +59,36 @@ int readLightLevel(){
 // Communicates the slave to switch the light bulb on or off depending on the light level
 void checkLightLevel(){
   // Only checks the light level every 10 seconds 
-  if(time % 10 == 0){
+  if (time % 10 == 0){
     int threshold = 20;
     if(readLightLevel() <= 20){
       transmit("LS", 1);
     }
     else{
-      transmit("LS", 0);
+      transmit("LS", 0)
     }
   }
 }
+
+int readMoistureLevel(){
+  // May put the contents of readMoistureLevel() and readLightLevel() in one function
+  // The code is very similar
+  int moistureLevel = analogRead(moisturePin);
+  moistureLevel = map(moistureLevel, 0, 1000, 0, 100);
+  moistureLevel = constrain(moistureLevel, 0, 100);
+  return moistureLevel;
+}
+
+void checkMoistureLevel(){
+  // May put contents of checkMoistureLevel() and checkLightLevel() in one function
+  if (time % 10 == 0){
+    if (readMoistureLevel() >= 60){
+      transmit("PS", 1);
+    }
+    else {
+      transmit("PS", 0);
+    }
+  }
+}
+
+
