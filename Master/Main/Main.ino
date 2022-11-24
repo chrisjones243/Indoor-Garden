@@ -28,7 +28,6 @@ void setup() {
 
 // Each loop in the program is called every second
 void loop() {
-  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
   transmit("LV", readLightLevel()); // Transmits the light level to the slave
   Serial.println(readLightLevel());
   checkLightLevel();
