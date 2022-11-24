@@ -4,6 +4,7 @@
 //Access the Wire library
 #include <Wire.h>
 
+int lightPin = 0
 int moisturePin = 1; // Sets the photoresistor to a pin
 int time = 0; // Keeps track of how many seconds has passed
 
