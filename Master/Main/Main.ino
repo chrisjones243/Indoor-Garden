@@ -28,7 +28,7 @@ void setup() {
 
 // Each loop in the program is called every second
 void loop() {
-  readMoistureLevel();
+  transmit("MV", readMoistureLevel());
   delay(1000);
   time ++; 
   }
@@ -41,8 +41,13 @@ void transmit(char mode[], int value){
   Wire.endTransmission();
 }
 
-void readMoistureLevel(){
+
+int readMoistureLevel(){
+  // May put the contents of readMoistureLevel and readLightLevel in one function
+  // The code is very similar
   int moistureLevel = analogRead(moisturePin);
   Serial.println(moistureLevel);
-  
+  moistureLevel = map(moistureLevel, 0, 1000, 0, 100);
+  moistureLevel = constrain(moistureLevel, 0, 100);
+  return moistureLevel;
 }
