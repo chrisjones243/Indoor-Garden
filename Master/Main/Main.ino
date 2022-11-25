@@ -37,6 +37,7 @@ void loop() {
   transmit("LV", readValue(lightPin)); // Transmits the light level to the slave
   checkMoistureLevel();
   checkLightLevel();
+  //This is so the program checks if the button is pressed over one second
   for (int x = 0; x < 100; x ++){
     detectButtonInput();
     delay(10);
@@ -52,6 +53,7 @@ void transmit(char mode[], int value){
   Wire.endTransmission();
 }
 
+// Sends a signal to the slave to turn the pump on when the button is pushed down
 void detectButtonInput(){
   buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH){
