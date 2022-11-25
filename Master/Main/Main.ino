@@ -5,7 +5,8 @@
 #include <Wire.h>
 
 int buttonPin = 6;
-
+int lightPin = 0; // Sets the photoresistor to a pin
+int moisturePin = 1; // Sets the photoresistor to a pin
 
 int time = 0; // Keeps track of how many seconds has passed
 int buttonState;
@@ -37,7 +38,7 @@ void loop() {
   transmit("LV", readValue(lightPin)); // Transmits the light level to the slave
   checkMoistureLevel();
   checkLightLevel();
-  //This is so the program checks if the button is pressed over one second
+  //This is so the program checks if the button is pressed over the course of one second
   for (int x = 0; x < 100; x ++){
     detectButtonInput();
     delay(10);
@@ -58,11 +59,9 @@ void detectButtonInput(){
   buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH){
     transmit("PS", 1);
-    Serial.println(1);
   }
   else{
     transmit("PS", 0);
-    Serial.println(0);
   }
 }
 
