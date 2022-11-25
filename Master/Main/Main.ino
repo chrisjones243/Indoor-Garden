@@ -62,7 +62,6 @@ void checkLightLevel(){
 }
 
 void checkMoistureLevel(){
-  // May put contents of checkMoistureLevel() and checkLightLevel() in one function
   if (time % 10 == 0){
     if (readValue(moisturePin) >= 60){
       transmit("PS", 1);
