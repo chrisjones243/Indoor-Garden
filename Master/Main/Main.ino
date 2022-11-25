@@ -32,7 +32,11 @@ void setup() {
 
 // Each loop in the program is called every second
 void loop() {
-  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their task
+  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
+  transmit("MV", readValue(moisturePin));
+  transmit("LV", readValue(lightPin)); // Transmits the light level to the slave
+  checkMoistureLevel();
+  checkLightLevel();
   for (int x = 0; x < 100; x ++){
     detectButtonInput();
     delay(10);
@@ -58,6 +62,39 @@ void detectButtonInput(){
     transmit("PS", 0);
     Serial.println(0);
   }
+}
+
+// Communicates the slave to switch the light bulb on or off depending on the light level
+void checkLightLevel(){
+  // Only checks the light level every 10 seconds 
+  if (time % 10 == 0){
+    if(readValue(lightPin) <= 20){
+      transmit("LS", 1);
+    }
+    else{
+      transmit("LS", 0);
+    }
+  }
+}
+
+// Communicates to the slave to open the water pump depending on the moisture in the soil
+void checkMoistureLevel(){
+  if (time % 15 == 0){
+    if (readValue(moisturePin) >= 60){
+      transmit("PS", 1);
+    }
+    else {
+      transmit("PS", 0);
+    }
+  }
+}
+
+// Reads the anologue values of the pins and maps them from 0 to 100
+int readValue(int pin){
+  int reading = analogRead(pin);
+  reading = map(reading, 0, 1024, 0, 100);
+  reading = constrain(reading, 0, 100);
+  return reading;
 }
 
 
