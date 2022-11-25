@@ -6,8 +6,10 @@
 #include <LiquidCrystal.h> //Access the LiquidCrystal library
 
 // LCD pins
-int rs = 5, en = 7, d4 = 8, d5 = ..., d6 = 10;
+int rs = 5, en = 7, d4 = 8, d5 = 9, d6 = 10, d7 = 11;
 
+// LCD object
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 int lightPin = 13;
 int pumpPin = 12;
