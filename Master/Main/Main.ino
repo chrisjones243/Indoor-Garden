@@ -4,17 +4,11 @@
 //Access the Wire library
 #include <Wire.h>
 
-int buttonPin = 0;
+int buttonPin = 6;
 
 
 int time = 0; // Keeps track of how many seconds has passed
-int buttonState;            // the current reading from the input pin
-int lastButtonState = LOW;  // the previous reading from the input pin
-
-// the following variables are unsigned longs because the time, measured in
-// milliseconds, will quickly become a bigger number than can be stored in an int.
-unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 50;    
+int buttonState;
 
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
@@ -34,13 +28,15 @@ unsigned long debounceDelay = 50;
 void setup() {
   Wire.begin(); // Starts I2C communication
   Serial.begin(9600); // Serial communication
-  attachInterrupt(0, buttonInput, RISING);
 }
 
 // Each loop in the program is called every second
 void loop() {
-  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
-  delay(1000);
+  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their task
+  for (int x = 0; x < 100; x ++){
+    detectButtonInput();
+    delay(10);
+  }
   time ++; 
   }
 
@@ -52,7 +48,16 @@ void transmit(char mode[], int value){
   Wire.endTransmission();
 }
 
-void buttonInput(){
+void detectButtonInput(){
+  buttonState = digitalRead(buttonPin);
+  if (buttonState == HIGH){
+    transmit("PS", 1);
+    Serial.println(1);
+  }
+  else{
+    transmit("PS", 0);
+    Serial.println(0);
+  }
 }
 
 
