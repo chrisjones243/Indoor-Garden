@@ -51,7 +51,6 @@ void transmit(char mode[], int value){
 void checkLightLevel(){
   // Only checks the light level every 10 seconds 
   if (time % 10 == 0){
-    int threshold = 20;
     if(readValue(lightPin) <= 20){
       transmit("LS", 1);
     }
@@ -61,6 +60,7 @@ void checkLightLevel(){
   }
 }
 
+// Communicates to the slave to open the water pump depending on the moisture in the soil
 void checkMoistureLevel(){
   if (time % 15 == 0){
     if (readValue(moisturePin) >= 60){
@@ -72,6 +72,7 @@ void checkMoistureLevel(){
   }
 }
 
+// Reads the anologue values of the pins and maps them from 0 to 100
 int readValue(int pin){
   int reading = analogRead(pin);
   reading = map(reading, 0, 1024, 0, 100);
