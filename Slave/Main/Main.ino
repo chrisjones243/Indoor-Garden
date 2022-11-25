@@ -3,6 +3,10 @@
 
 #include <Wire.h> //Access the Wire library
 #include <Arduino.h> //Access the Arduino library
+#include <LiquidCrystal.h> //Access the LiquidCrystal library
+
+// LCD pins
+int rs = 5, en = 7, d4 = 8, d5 = ..., d6 = 10;
 
 
 int lightPin = 13;
