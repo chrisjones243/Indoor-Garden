@@ -4,10 +4,18 @@
 //Access the Wire library
 #include <Wire.h>
 
+int buttonPin = 0;
 
-int lightPin = 0; // Sets the photoresistor to a pin
-int moisturePin = 1; // Sets the photoresistor to a pin
+
 int time = 0; // Keeps track of how many seconds has passed
+int buttonState;            // the current reading from the input pin
+int lastButtonState = LOW;  // the previous reading from the input pin
+
+// the following variables are unsigned longs because the time, measured in
+// milliseconds, will quickly become a bigger number than can be stored in an int.
+unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    
+
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
 // LS[boolean] = lightState, the state of the light
@@ -26,6 +34,7 @@ int time = 0; // Keeps track of how many seconds has passed
 void setup() {
   Wire.begin(); // Starts I2C communication
   Serial.begin(9600); // Serial communication
+  attachInterrupt(0, buttonInput, RISING);
 }
 
 // Each loop in the program is called every second
@@ -41,6 +50,9 @@ void transmit(char mode[], int value){
   Wire.write(mode);
   Wire.write(value);
   Wire.endTransmission();
+}
+
+void buttonInput(){
 }
 
 
