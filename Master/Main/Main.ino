@@ -56,7 +56,7 @@ void checkLightLevel(){
       transmit("LS", 1);
     }
     else{
-      transmit("LS", 0)
+      transmit("LS", 0);
     }
   }
 }

@@ -26,6 +26,13 @@ void setup() {
 void loop() {
 }
 
+void setLightState(bool state) {
+  digitalWrite(lightPin, state);
+}
+
+void setPumpState(bool state) {
+  digitalWrite(pumpPin, state);
+}
 
 void displayLightVal(int val) {
   lightVal = val;
