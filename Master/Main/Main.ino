@@ -9,7 +9,7 @@ int lightPin = 0; // Sets the photoresistor to a pin
 int moisturePin = 1; // Sets the photoresistor to a pin
 
 int time = 0; // Keeps track of how many seconds has passed
-int buttonState;
+int buttonState; // Stores whether the button is HIGH or LOW
 
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
