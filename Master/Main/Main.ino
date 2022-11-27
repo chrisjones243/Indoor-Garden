@@ -3,7 +3,6 @@
 
 //Access the Wire library
 #include <Wire.h>
-
 int lightPin = 0; // Sets the photoresistor to a pin
 int time = 0; // Keeps track of how many seconds has passed
 
@@ -29,7 +28,7 @@ void setup() {
 // Each loop in the program is called every second
 void loop() {
   transmit("LV", readLightLevel()); // Transmits the light level to the slave
-  Serial.println(readLightLevel());
+  // Serial.println(readLightLevel());
   checkLightLevel();
   delay(1000);
   time ++; 
@@ -37,18 +36,25 @@ void loop() {
 
 //Transmits the command mode and the value to the slave
 void transmit(char mode[], int value){
+  char message[5];
+  char strValue[3];
+  sprintf(strValue, "%d", value);
+  strcpy(message, mode);
+  strcat(message, strValue);
+  Serial.println(message);
   Wire.beginTransmission(8);
-      Wire.write(mode);
-      Wire.write(value);
-      Wire.endTransmission();
+  Wire.write(message);
+  Wire.endTransmission();
 }
 
 // Returns the light level detected by the arduino from 0 to 100
 int readLightLevel(){
-      int lightLevel = analogRead(lightPin);
-      lightLevel = map(lightLevel, 0, 1000, 0, 100);
-      lightLevel = constrain(lightLevel, 0, 100);
-      return lightLevel;
+	int lightLevel = analogRead(lightPin);
+	lightLevel = map(lightLevel, 0, 1024, 0, 100);
+	lightLevel = constrain(lightLevel, 0, 100);
+  	//Serial.println(lightLevel);
+    return lightLevel;
+  	
 }
 
 // Communicates the slave to switch the light bulb on or off depending on the light level
@@ -61,7 +67,7 @@ void checkLightLevel(){
     }
     else{
       transmit("LS", 0);
-    }
   }
+}
 }
 
