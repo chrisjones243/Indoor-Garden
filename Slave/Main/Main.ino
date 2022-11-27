@@ -22,6 +22,9 @@ void setup() {
   Wire.onReceive(receiveEvent);
   pinMode(lightPin, OUTPUT);
   lcd.begin(16, 2);
+  lcd.print("LED:");
+  lcd.setCursor(8, 0);
+  lcd.print("PUMP:");
   lcd.setCursor(0, 1);
   lcd.print("LGT:");
   lcd.setCursor(8, 1);
