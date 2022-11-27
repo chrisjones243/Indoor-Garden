@@ -48,9 +48,15 @@ void loop() {
 
 //Transmits the command mode and the value to the slave
 void transmit(char mode[], int value){
+  char message[6];
+  char strValue[4];
+  sprintf(strValue, "%d", value);
+  Serial.println(strValue);
+  strcpy(message, mode);
+  strcat(message, strValue);
+  Serial.println(message);
   Wire.beginTransmission(8);
-  Wire.write(mode);
-  Wire.write(value);
+  Wire.write(message);
   Wire.endTransmission();
 }
 
@@ -74,8 +80,8 @@ void checkLightLevel(){
     }
     else{
       transmit("LS", 0);
-    }
   }
+}
 }
 
 // Communicates to the slave to open the water pump depending on the moisture in the soil
