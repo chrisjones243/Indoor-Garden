@@ -7,26 +7,54 @@ int rs = 5, en = 7, d4 = 8, d5 = 9, d6 = 10, d7 = 11;
 
 // LCD object
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-
 int lightPin = 13;
 int pumpPin = 12;
-int lightVal = 0;
-int moistureVal = 0;
+int lightLCD = 101;
+int moistureLCD = 101;
+int LEDLCD = 0; // This is not a constant
+int pumpLCD = 0;
+
+byte sun[] = {
+  B10001,
+  B11011,
+  B01110,
+  B11111,
+  B11111,
+  B01110,
+  B11011,
+  B10001
+};
+
+byte water[] = {
+  B00011,
+  B00111,
+  B01110,
+  B01110,
+  B11111,
+  B11111,
+  B11111,
+  B01110
+};
+const char* moistureValue;
 
 void setup() {
   //Sets the address of the arduino to 8
   Wire.begin(8);
   //Registers the event when the arduino recieves a transmission
   Wire.onReceive(receiveEvent);
+  lcd.createChar(0, sun);
+  lcd.createChar(1, water);
   pinMode(lightPin, OUTPUT);
   lcd.begin(16, 2);
   lcd.print("LED:OFF");
   lcd.setCursor(8, 0);
   lcd.print("PUMP:OFF");
-  lcd.setCursor(0, 1);
-  lcd.print("LGT:");
+  lcd.setCursor(1, 1);
+  lcd.write(byte(0));
+  lcd.print(":");
   lcd.setCursor(8, 1);
-  lcd.print("MSTR:");
+  lcd.write(byte(1));
+  lcd.print(":");
   //Starts the serial to output on the serial monitor
   //This is done to observe what signal the slave is receiving
   Serial.begin(9600);
@@ -37,61 +65,46 @@ void loop() {
 
 void setLightState(bool state) {
   if (state == true){
-    lcd.setCursor(4, 0);
-    lcd.print("   ");
-    lcd.setCursor(6, 0);
-    lcd.rightToLeft();
-    lcd.print("NO");
+    if (LEDLCD != 1){
+      displayString("ON", 6, 0);
+      LEDLCD = 1;
+    }
   }
   else{
-    lcd.setCursor(4, 0);
-  	lcd.print("   ");
-    lcd.setCursor(6, 0);
-    lcd.rightToLeft();
-    lcd.print("FFO");
+    if (LEDLCD != 0){
+      displayString("OFF", 6, 0);
+      LEDLCD = 0;
+    }
   }
-  lcd.leftToRight();
 }
 
 void setPumpState(bool state) {
-  Serial.println(state);
   if (state == true){
-    lcd.setCursor(13, 0);
-  	lcd.print("   ");
-    lcd.setCursor(15, 0);
-    lcd.rightToLeft();
-    lcd.print("NO");
+    if (pumpLCD != 1){
+      displayString("ON", 15, 0);
+      pumpLCD = 1;
+    }
   }
   else{
-    lcd.setCursor(13, 0);
-  	lcd.print("   ");
-    lcd.setCursor(15, 0);
-    lcd.rightToLeft();
-    lcd.print("FFO");
+    if (pumpLCD != 0){
+      displayString("OFF", 15, 0);
+      pumpLCD = 0;
+    }
   }
-  lcd.leftToRight();
 }
 
-void displayLightVal(String val) {
-  const char* lightValue = val.c_str();
-  lcd.setCursor(4, 1);
-  lcd.print("   ");
-  lcd.setCursor(6, 1);
-  lcd.rightToLeft();
-  for (int i = strlen(lightValue) - 1; i >= 0; i --){
-    lcd.print(lightValue[i]);
-  }
-  lcd.leftToRight();
+void displayValue(String value, int collumn, int row){
+  const char* strValue = value.c_str();
+  displayString(strValue, collumn, row);
 }
 
-void displayMoistureVal(String val) {
-  const char* moistureValue = val.c_str();
-  lcd.setCursor(13, 1);
+void displayString(const char string[], int collumn, int row){
+  lcd.setCursor(collumn - 2, row);
   lcd.print("   ");
-  lcd.setCursor(15, 1);
+  lcd.setCursor(collumn, row);
   lcd.rightToLeft();
-  for (int i = strlen(moistureValue) - 1; i >= 0; i --){
-    lcd.print(moistureValue[i]);
+  for (int i = strlen(string) - 1; i >= 0; i --){
+    lcd.print(string[i]);
   }
   lcd.leftToRight();
 }
@@ -117,13 +130,17 @@ void processCommand(String command) {
   }
   //Checks if the command is a light value command
   if (command.substring(0, 2) == "LV") {
-    //Sets the light value to the value in the command
-    displayLightVal(command.substring(2));
+    if (lightLCD != command.substring(2).toInt()){
+      displayValue(command.substring(2), 5, 1);
+      lightLCD = command.substring(2).toInt();
+    }   
   }
   //Checks if the command is a moisture value command
   if (command.substring(0, 2) == "MV") {
-    //Sets the moisture value to the value in the command
-    displayMoistureVal(command.substring(2));
+    if (moistureLCD != command.substring(2).toInt()){
+      displayValue(command.substring(2), 12, 1);
+      moistureLCD = command.substring(2).toInt();
+    }
   }
 }
 
