@@ -2,7 +2,6 @@
 // and will be used to process the outputs using data from the master device.
 
 #include <Wire.h> //Access the Wire library
-#include <Arduino.h> //Access the Arduino library
 #include <LiquidCrystal.h> //Access the LiquidCrystal library
 
 // LCD pins
