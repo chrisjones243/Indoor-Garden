@@ -15,8 +15,6 @@ int pumpPin = 12;
 int lightVal = 0;
 int moistureVal = 0;
 
-String data = "";
-
 void setup() {
   //Sets the address of the arduino to 8
   Wire.begin(8);
@@ -80,10 +78,11 @@ void processCommand(String command) {
 
 void receiveEvent(int bytes) {
   //This function is called when the arduino recieves a transmission
+  String data = "";
   while(Wire.available() > 0) {
     char c = Wire.read(); //Reads the data from the master
     data.concat(c); //Adds the data to the string
-    Serial.println(data); //Prints the data to the serial monitor
   }
+  Serial.println(data); //Prints the data to the serial monitor
   processCommand(data); //Processes the command
 }
