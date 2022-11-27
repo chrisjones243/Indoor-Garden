@@ -36,9 +36,10 @@ void loop() {
 
 //Transmits the command mode and the value to the slave
 void transmit(char mode[], int value){
-  char message[5];
-  char strValue[3];
+  char message[6];
+  char strValue[4];
   sprintf(strValue, "%d", value);
+  Serial.println(strValue);
   strcpy(message, mode);
   strcat(message, strValue);
   Serial.println(message);

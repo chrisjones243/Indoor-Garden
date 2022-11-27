@@ -21,6 +21,11 @@ void setup() {
   //Registers the event when the arduino recieves a transmission
   Wire.onReceive(receiveEvent);
   pinMode(lightPin, OUTPUT);
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 1);
+  lcd.print("LiLv:");
+  lcd.setCursor(8, 1);
+  lcd.print("WaLv:");
   //Starts the serial to output on the serial monitor
   //This is done to observe what signal the slave is receiving
   Serial.begin(9600);
@@ -37,8 +42,9 @@ void setPumpState(bool state) {
   digitalWrite(pumpPin, state);
 }
 
-void displayLightVal(int val) {
-  lightVal = val;
+void displayLightVal(String val) {
+  lcd.setCursor(5, 1);
+  lcd.write(val);
 }
 
 void displayMoistureVal(int val) {
@@ -67,7 +73,7 @@ void processCommand(String command) {
   //Checks if the command is a light value command
   if (command.substring(0, 2) == "LV") {
     //Sets the light value to the value in the command
-    displayLightVal(command.substring(2).toInt());
+    displayLightVal(command.substring(2));
   }
   //Checks if the command is a moisture value command
   if (command.substring(0, 2) == "MV") {
