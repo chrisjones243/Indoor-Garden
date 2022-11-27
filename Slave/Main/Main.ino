@@ -46,20 +46,27 @@ void setPumpState(bool state) {
 }
 
 void displayLightVal(String val) {
-  Serial.println(val);
-  const char* string1 = val.c_str();
+  const char* lightValue = val.c_str();
   lcd.setCursor(4, 1);
   lcd.print("   ");
   lcd.setCursor(6, 1);
   lcd.rightToLeft();
-  for (int i = strlen(string1) - 1; i >= 0; i --){
-    lcd.print(string1[i]);
+  for (int i = strlen(lightValue) - 1; i >= 0; i --){
+    lcd.print(lightValue[i]);
   }
   lcd.leftToRight();
 }
 
-void displayMoistureVal(int val) {
-  moistureVal = val;
+void displayMoistureVal(String val) {
+  const char* moistureValue = val.c_str();
+  lcd.setCursor(13, 1);
+  lcd.print("   ");
+  lcd.setCursor(15, 1);
+  lcd.rightToLeft();
+  for (int i = strlen(moistureValue) - 1; i >= 0; i --){
+    lcd.print(moistureValue[i]);
+  }
+  lcd.leftToRight();
 }
 
 void processCommand(String command) {
@@ -89,7 +96,7 @@ void processCommand(String command) {
   //Checks if the command is a moisture value command
   if (command.substring(0, 2) == "MV") {
     //Sets the moisture value to the value in the command
-    displayMoistureVal(command.substring(2).toInt());
+    displayMoistureVal(command.substring(2));
   }
 }
 
