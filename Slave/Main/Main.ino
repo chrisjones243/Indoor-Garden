@@ -23,9 +23,9 @@ void setup() {
   pinMode(lightPin, OUTPUT);
   lcd.begin(16, 2);
   lcd.setCursor(0, 1);
-  lcd.print("LiLv:");
+  lcd.print("LGT:");
   lcd.setCursor(8, 1);
-  lcd.print("WaLv:");
+  lcd.print("MSTR:");
   //Starts the serial to output on the serial monitor
   //This is done to observe what signal the slave is receiving
   Serial.begin(9600);
@@ -43,8 +43,16 @@ void setPumpState(bool state) {
 }
 
 void displayLightVal(String val) {
-  lcd.setCursor(5, 1);
-  lcd.write(val);
+  Serial.println(val);
+  const char* string1 = val.c_str();
+  lcd.setCursor(4, 1);
+  lcd.print("   ");
+  lcd.setCursor(6, 1);
+  lcd.rightToLeft();
+  for (int i = strlen(string1) - 1; i >= 0; i --){
+    lcd.print(string1[i]);
+  }
+  lcd.leftToRight();
 }
 
 void displayMoistureVal(int val) {
