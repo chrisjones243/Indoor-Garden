@@ -10,8 +10,8 @@ int moisturePin = 1; // Sets the photoresistor to a pin
 
 int time = 0; // Keeps track of how many seconds has passed
 int buttonState;
-
-
+int currentTime = 0;
+int automaticPump = false;
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
 // LS[boolean] = lightState, the state of the light
 // PS[boolean] = pumpState, the state of the pump
@@ -39,9 +39,9 @@ void loop() {
   checkMoistureLevel();
   checkLightLevel();
   //This is so the program checks if the button is pressed over the course of one second
-  for (int x = 0; x < 100; x ++){
+  for (int x = 0; x < 10; x ++){
     detectButtonInput();
-    delay(10);
+    delay(100);
   }
   time ++; 
   }
@@ -51,10 +51,9 @@ void transmit(char mode[], int value){
   char message[6];
   char strValue[4];
   sprintf(strValue, "%d", value);
-  Serial.println(strValue);
   strcpy(message, mode);
   strcat(message, strValue);
-  Serial.println(message);
+  //Serial.println(message);
   Wire.beginTransmission(8);
   Wire.write(message);
   Wire.endTransmission();
@@ -66,7 +65,7 @@ void detectButtonInput(){
   if (buttonState == HIGH){
     transmit("PS", 1);
   }
-  else{
+  else if (automaticPump == false){
     transmit("PS", 0);
   }
 }
@@ -74,7 +73,7 @@ void detectButtonInput(){
 // Communicates the slave to switch the light bulb on or off depending on the light level
 void checkLightLevel(){
   // Only checks the light level every 10 seconds 
-  if (time % 10 == 0){
+  if (time % 20 == 0){
     if(readValue(lightPin) <= 20){
       transmit("LS", 1);
     }
@@ -86,13 +85,16 @@ void checkLightLevel(){
 
 // Communicates to the slave to open the water pump depending on the moisture in the soil
 void checkMoistureLevel(){
-  if (time % 15 == 0){
+  if (time % 25 == 0){
     if (readValue(moisturePin) >= 60){
+      currentTime = time;
+      automaticPump = true;
       transmit("PS", 1);
     }
-    else {
+  }
+  if (time == currentTime + 4){
+      automaticPump = false;
       transmit("PS", 0);
-    }
   }
 }
 
@@ -103,6 +105,7 @@ int readValue(int pin){
   reading = constrain(reading, 0, 100);
   return reading;
 }
+
 
 
 

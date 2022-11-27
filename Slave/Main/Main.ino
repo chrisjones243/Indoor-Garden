@@ -1,5 +1,3 @@
-// This will contain the main code for the slave device
-// and will be used to process the outputs using data from the master device.
 
 #include <Wire.h> //Access the Wire library
 #include <LiquidCrystal.h> //Access the LiquidCrystal library
@@ -22,9 +20,9 @@ void setup() {
   Wire.onReceive(receiveEvent);
   pinMode(lightPin, OUTPUT);
   lcd.begin(16, 2);
-  lcd.print("LED:");
+  lcd.print("LED:OFF");
   lcd.setCursor(8, 0);
-  lcd.print("PUMP:");
+  lcd.print("PUMP:OFF");
   lcd.setCursor(0, 1);
   lcd.print("LGT:");
   lcd.setCursor(8, 1);
@@ -38,11 +36,40 @@ void loop() {
 }
 
 void setLightState(bool state) {
-  digitalWrite(lightPin, state);
+  if (state == true){
+    lcd.setCursor(4, 0);
+    lcd.print("   ");
+    lcd.setCursor(6, 0);
+    lcd.rightToLeft();
+    lcd.print("NO");
+  }
+  else{
+    lcd.setCursor(4, 0);
+  	lcd.print("   ");
+    lcd.setCursor(6, 0);
+    lcd.rightToLeft();
+    lcd.print("FFO");
+  }
+  lcd.leftToRight();
 }
 
 void setPumpState(bool state) {
-  digitalWrite(pumpPin, state);
+  Serial.println(state);
+  if (state == true){
+    lcd.setCursor(13, 0);
+  	lcd.print("   ");
+    lcd.setCursor(15, 0);
+    lcd.rightToLeft();
+    lcd.print("NO");
+  }
+  else{
+    lcd.setCursor(13, 0);
+  	lcd.print("   ");
+    lcd.setCursor(15, 0);
+    lcd.rightToLeft();
+    lcd.print("FFO");
+  }
+  lcd.leftToRight();
 }
 
 void displayLightVal(String val) {
@@ -107,6 +134,6 @@ void receiveEvent(int bytes) {
     char c = Wire.read(); //Reads the data from the master
     data.concat(c); //Adds the data to the string
   }
-  Serial.println(data); //Prints the data to the serial monitor
+  //Serial.println(data); //Prints the data to the serial monitor
   processCommand(data); //Processes the command
 }
