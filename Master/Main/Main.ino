@@ -9,9 +9,10 @@ int lightPin = 0; // Sets the photoresistor to a pin
 int moisturePin = 1; // Sets the photoresistor to a pin
 
 int time = 0; // Keeps track of how many seconds has passed
-int buttonState;
-int currentTime = 0;
-int automaticPump = false;
+int buttonState; // Stores the state of the button, if it is HIGH or LOW
+int previousTime = 0; // Stores an instance of the time so it can be compared with the current time
+int automaticPump = false; // A flag to check if checkMoistureLevel() is currently transmitting a signal to turn the pump on
+
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
 // LS[boolean] = lightState, the state of the light
 // PS[boolean] = pumpState, the state of the pump
@@ -34,8 +35,9 @@ void setup() {
 // Each loop in the program is called every second
 void loop() {
   Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
-  transmit("MV", readValue(moisturePin));
-  transmit("LV", readValue(lightPin)); // Transmits the light level to the slave
+  // Transmits the light and moisture level to the slave
+  transmit("MV", readValue(moisturePin)); 
+  transmit("LV", readValue(lightPin));
   checkMoistureLevel();
   checkLightLevel();
   //This is so the program checks if the button is pressed over the course of one second
@@ -50,6 +52,7 @@ void loop() {
 void transmit(char mode[], int value){
   char message[6];
   char strValue[4];
+  // Converts value in to a string and concatenates the mode and the value together
   sprintf(strValue, "%d", value);
   strcpy(message, mode);
   strcat(message, strValue);
@@ -59,16 +62,6 @@ void transmit(char mode[], int value){
   Wire.endTransmission();
 }
 
-// Sends a signal to the slave to turn the pump on when the button is pushed down
-void detectButtonInput(){
-  buttonState = digitalRead(buttonPin);
-  if (buttonState == HIGH){
-    transmit("PS", 1);
-  }
-  else if (automaticPump == false){
-    transmit("PS", 0);
-  }
-}
 
 // Communicates the slave to switch the light bulb on or off depending on the light level
 void checkLightLevel(){
@@ -84,19 +77,32 @@ void checkLightLevel(){
 }
 
 // Communicates to the slave to open the water pump depending on the moisture in the soil
+// If the pump needs to be open, automaticPump is set to true so detectButtonInput() does not affect the master communication
 void checkMoistureLevel(){
   if (time % 25 == 0){
     if (readValue(moisturePin) >= 60){
-      currentTime = time;
+      previousTime = time;
       automaticPump = true;
       transmit("PS", 1);
     }
   }
-  if (time == currentTime + 4){
+  if (time == previousTime + 4){
       automaticPump = false;
       transmit("PS", 0);
   }
 }
+
+// Sends a signal to the slave to turn the pump on when the button is pushed down
+void detectButtonInput(){
+  buttonState = digitalRead(buttonPin);
+  if (buttonState == HIGH){
+    transmit("PS", 1);
+  }
+  else if (automaticPump == false){
+    transmit("PS", 0);
+  }
+}
+
 
 // Reads the anologue values of the pins and maps them from 0 to 100
 int readValue(int pin){
