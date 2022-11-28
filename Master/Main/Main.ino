@@ -66,7 +66,7 @@ void transmit(char mode[], int value){
 // Communicates the slave to switch the light bulb on or off depending on the light level
 void checkLightLevel(){
   // Only checks the light level every 10 seconds 
-  if (time % 20 == 0){
+  if (time % 10 == 0){
     if(readValue(LDRPin) <= 20){
       transmit("LS", 1);
     }
@@ -79,7 +79,7 @@ void checkLightLevel(){
 // Communicates to the slave to open the water pump depending on the moisture in the soil
 // If the pump needs to be open, automaticPump is set to true so detectButtonInput() does not affect the master communication
 void checkMoistureLevel(){
-  if (time % 25 == 0){
+  if (time % 15 == 0){
     if (readValue(moisturePin) <= 20){
       previousTime = time;
       automaticPump = true;
