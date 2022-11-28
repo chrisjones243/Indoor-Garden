@@ -5,7 +5,7 @@
 #include <Wire.h>
 
 int buttonPin = 6;
-int lightPin = 0; // Sets the photoresistor to a pin
+int LDRPin = 0; // Sets the photoresistor to a pin
 int moisturePin = 1; // Sets the photoresistor to a pin
 
 int time = 0; // Keeps track of how many seconds has passed
@@ -37,7 +37,7 @@ void loop() {
   Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
   // Transmits the light and moisture level to the slave
   transmit("MV", readValue(moisturePin)); 
-  transmit("LV", readValue(lightPin));
+  transmit("LV", readValue(LDRPin));
   checkMoistureLevel();
   checkLightLevel();
   //This is so the program checks if the button is pressed over the course of one second
@@ -67,7 +67,7 @@ void transmit(char mode[], int value){
 void checkLightLevel(){
   // Only checks the light level every 10 seconds 
   if (time % 20 == 0){
-    if(readValue(lightPin) <= 20){
+    if(readValue(LDRPin) <= 20){
       transmit("LS", 1);
     }
     else{
@@ -80,7 +80,7 @@ void checkLightLevel(){
 // If the pump needs to be open, automaticPump is set to true so detectButtonInput() does not affect the master communication
 void checkMoistureLevel(){
   if (time % 25 == 0){
-    if (readValue(moisturePin) >= 60){
+    if (readValue(moisturePin) <= 20){
       previousTime = time;
       automaticPump = true;
       transmit("PS", 1);
