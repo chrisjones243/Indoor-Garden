@@ -73,15 +73,16 @@ void loop() {
 
 // Turns the LEDs on/off and displays its status on the LCD
 void setLightState(bool state) {
-  if (state == true){
+  if (state){
     if (LEDLCD != 1){
       displayString("ON", 6, 0);
+      digitalWrite(LEDPin, HIGH);
       LEDLCD = 1;
     }
-  }
-  else{
+  } else {
     if (LEDLCD != 0){
       displayString("OFF", 6, 0);
+      digitalWrite(LEDPin, LOW);
       LEDLCD = 0;
     }
   }
@@ -89,15 +90,16 @@ void setLightState(bool state) {
 
 // Turns the water Solenoid on/off and displays its status on the LCD
 void setPumpState(bool state) {
-  if (state == true){
+  if (state){
     if (pumpLCD != 1){
       displayString("ON", 15, 0);
+      digitalWrite(pumpPin, HIGH);
       pumpLCD = 1;
     }
-  }
-  else{
+  } else {
     if (pumpLCD != 0){
       displayString("OFF", 15, 0);
+      digitalWrite(pumpPin, LOW);
       pumpLCD = 0;
     }
   }
