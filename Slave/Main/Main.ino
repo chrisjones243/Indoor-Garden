@@ -16,8 +16,7 @@ int pumpPin = 12;
 // This is to minimise the refreshes of the LCD display to prevent flickering
 int lightLCD = 101;
 int moistureLCD = 101;
-int LEDLCD = 0; // This is not a constant
-int pumpLCD = 0;
+
 
 // Custom character icons to represent light level and moisture level respectively 
 byte sun[] = {
@@ -52,6 +51,8 @@ void setup() {
   lcd.createChar(1, water);
   // Sets the LED pin to output 
   pinMode(LEDPin, OUTPUT);
+  pinMode(pumpPin, OUTPUT);
+  digitalWrite(LEDPin, HIGH); // Some reason HIGH and LOW are reversed for LEDS?
   // Initialises the display on the the LCD
   lcd.begin(16, 2);
   lcd.print("LED:OFF");
@@ -69,39 +70,29 @@ void setup() {
 }
 
 void loop() {
+  // This is to prevent the arduino from crashing
+  delay(100);
 }
 
 // Turns the LEDs on/off and displays its status on the LCD
 void setLightState(bool state) {
   if (state){
-    if (LEDLCD != 1){
       displayString("ON", 6, 0);
-      digitalWrite(LEDPin, HIGH);
-      LEDLCD = 1;
-    }
+      digitalWrite(LEDPin, LOW); // Some reason HIGH and LOW are reversed for LEDS?
   } else {
-    if (LEDLCD != 0){
       displayString("OFF", 6, 0);
-      digitalWrite(LEDPin, LOW);
-      LEDLCD = 0;
-    }
+      digitalWrite(LEDPin, HIGH);
   }
 }
 
 // Turns the water Solenoid on/off and displays its status on the LCD
 void setPumpState(bool state) {
   if (state){
-    if (pumpLCD != 1){
       displayString("ON", 15, 0);
       digitalWrite(pumpPin, HIGH);
-      pumpLCD = 1;
-    }
   } else {
-    if (pumpLCD != 0){
       displayString("OFF", 15, 0);
       digitalWrite(pumpPin, LOW);
-      pumpLCD = 0;
-    }
   }
 }
 
