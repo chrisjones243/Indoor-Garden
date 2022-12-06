@@ -111,6 +111,23 @@ void setPumpState(bool state) {
   }
 }
 
+void setState(bool state, int outputLCD, int outputPin, int collumn){
+  if (state){
+    if (outputLCD != 1){
+      displayString("ON", collumn, 0);
+      digitalWrite(outputPin, HIGH);
+      outputLCD = 1;
+    }
+  }
+  else{
+    if (outputLCD != 0){
+      displayString("OFF", collumn, 0);
+      digitalWrite(outputPin, LOW);
+      outputLCD = 0;
+    }
+  }
+}
+
 //Turns the String into a constant char so it can be displayed on the LCD
 void displayValue(String value, int collumn, int row){
   const char* strValue = value.c_str();
@@ -136,16 +153,21 @@ void processCommand(String command) {
   if (command.substring(0, 2) == "LS") {
     //Checks if the light state is on or off
     if (command.substring(2, 3) == "1") {
-      setLightState(true);
+      setState(true, lightLCD, LEDPin, 6);
+      //setLightState(true);
     } else {
-      setLightState(false);
+      //setLightState(false);
+      setState(false, lightLCD, LEDPin, 6);
     }
   }
   //Checks if the command is a pump state command
   if (command.substring(0, 2) == "PS") {
     //Checks if the pump state is on or off
     if (command.substring(2, 3) == "1") {
-      setPumpState(true);
+      setState(true, pumpLCD, LEDPin, 
+      
+      
+      )
     } else {
       setPumpState(false);
     }
