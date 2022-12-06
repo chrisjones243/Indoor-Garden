@@ -78,22 +78,36 @@ void loop() {
 // Turns the LEDs on/off and displays its status on the LCD
 void setLightState(bool state) {
   if (state){
+    if (LEDLCD != 1){
       displayString("ON", 6, 0);
       digitalWrite(LEDPin, LOW); // Some reason HIGH and LOW are reversed for LEDS?
-  } else {
+      LEDLCD = 1;
+    }
+  }
+  else{
+    if (LEDLCD != 0){
       displayString("OFF", 6, 0);
       digitalWrite(LEDPin, HIGH);
+      LEDLCD = 0;
+    }
   }
 }
 
 // Turns the water Solenoid on/off and displays its status on the LCD
 void setPumpState(bool state) {
   if (state){
+    if (pumpLCD != 1){
       displayString("ON", 15, 0);
       digitalWrite(pumpPin, HIGH);
-  } else {
+      pumpLCD = 1;
+    }
+  }
+  else{
+    if (pumpLCD != 0){
       displayString("OFF", 15, 0);
       digitalWrite(pumpPin, LOW);
+      pumpLCD = 0;
+    }
   }
 }
 
