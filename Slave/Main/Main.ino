@@ -16,7 +16,8 @@ int pumpPin = 12;
 // This is to minimise the refreshes of the LCD display to prevent flickering
 int lightLCD = 101;
 int moistureLCD = 101;
-
+int LEDLCD = 0; // This is not a constant
+int pumpLCD = 0;
 
 // Custom character icons to represent light level and moisture level respectively 
 byte sun[] = {
