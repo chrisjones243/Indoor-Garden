@@ -111,8 +111,8 @@ void setPumpState(bool state) {
   }
 }
 
-void setState(bool state, int outputLCD, int outputPin, int collumn){
-  if (state){
+void setState(int state, int outputLCD, int outputPin, int collumn){
+  if (state == 1){
     if (outputLCD != 1){
       displayString("ON", collumn, 0);
       outputLCD = 1;
@@ -129,9 +129,13 @@ void setState(bool state, int outputLCD, int outputPin, int collumn){
 }
 
 //Turns the String into a constant char so it can be displayed on the LCD
-void displayValue(String value, int collumn, int row){
+void displayValue(String value, int collumn, int row, int outputLCD){
   const char* strValue = value.c_str();
-  displayString(strValue, collumn, row);
+  if (outputLCD != value){
+    displayString(strValue, collumn, row);
+    outputLCD = value;
+  }
+  
 }
 
 // Clears the current display on the LCD and prints the new string onto the LCD
@@ -150,40 +154,25 @@ void displayString(const char string[], int collumn, int row){
 
 void processCommand(String command) {
   //Checks if the command is a light state command
-  if (command.substring(0, 2) == "LS") {
-    //Checks if the light state is on or off
-    if (command.substring(2, 3) == "1") {
-      setState(true, lightLCD, LEDPin, 6);
-      //setLightState(true);
-    } else {
-      //setLightState(false);
-      setState(false, lightLCD, LEDPin, 6);
-    }
+  String mode = command.substring(0, 2);
+  String value = command.substring(2).toInt();
+  if (mode == "LS") {
+      setState(value , lightLCD, LEDPin, 6);
   }
   //Checks if the command is a pump state command
-  if (command.substring(0, 2) == "PS") {
+  else if (mode == "PS") {
     //Checks if the pump state is on or off
-    if (command.substring(2, 3) == "1") {
-      setState(true, pumpLCD, pumpPin, 15);
-    } else {
-      setState(false, pumpLCD, pumpPin, 15);
-    }
+     setState(value, pumpLCD, pumpPin, 15);
   }
   //Checks if the command is a light value command
-  if (command.substring(0, 2) == "LV") {
+  else if (mode == "LV") {
     // Only displays the recieved value if it is different to the currently displayed value on the LCD
-    if (lightLCD != command.substring(2).toInt()){
-      displayValue(command.substring(2), 5, 1);
-      lightLCD = command.substring(2).toInt();
-    }   
+    displayValue(value, 5, 1, lightLCD); 
   }
   //Checks if the command is a moisture value command
-  if (command.substring(0, 2) == "MV") {
+  else if (mode == "MV") {
     // Similar process to "LV" above
-    if (moistureLCD != command.substring(2).toInt()){
-      displayValue(command.substring(2), 12, 1);
-      moistureLCD = command.substring(2).toInt();
-    }
+    displayValue(value, 12, 1, moistureLCD);
   }
 }
 
