@@ -12,6 +12,9 @@ int time = 0; // Keeps track of how many seconds has passed
 int buttonState; // Stores the state of the button, if it is HIGH or LOW
 int previousTime = 0; // Stores an instance of the time so it can be compared with the current time
 int automaticPump = false; // A flag to check if checkMoistureLevel() is currently transmitting a signal to turn the pump on
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 50;
+int lastButtonState = LOW;
 
 // NOTE: When transmitting data, to the slave device, the master device will need to send these values:
 // LS[boolean] = lightState, the state of the light
@@ -34,16 +37,16 @@ void setup() {
 
 // Each loop in the program is called every second
 void loop() {
-  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
+  //Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
   // Transmits the light and moisture level to the slave
   transmit("MV", readValue(moisturePin)); 
   transmit("LV", readValue(LDRPin));
   checkMoistureLevel();
   checkLightLevel();
   //This is so the program checks if the button is pressed over the course of one second
-  for (int x = 0; x < 10; x ++){
+  for (int x = 0; x < 5; x ++){
     detectButtonInput();
-    delay(100);
+    delay(250);
   }
   time ++; 
   }
@@ -56,7 +59,7 @@ void transmit(char mode[], int value){
   sprintf(strValue, "%d", value);
   strcpy(message, mode);
   strcat(message, strValue);
-  //Serial.println(message);
+  Serial.println(message);
   Wire.beginTransmission(8);
   Wire.write(message);
   Wire.endTransmission();
@@ -94,6 +97,23 @@ void checkMoistureLevel(){
 
 // Sends a signal to the slave to turn the pump on when the button is pushed down
 void detectButtonInput(){
+  /*
+  int reading= = digitalRead(buttonPin);
+  if (reading != lastButtonState){
+    lastDebounceTime = millis();
+  }
+  if ((millis() - lastDebounceTime) > debounceDelay){
+    if (reading != buttonState){
+      buttonState = reading;
+      if (buttonState == HIGH){
+        transmit("PS", 1);
+      }
+      else if(automaticPump == false){
+        transmit("PS", 0);
+      }
+    }
+  }
+  */
   buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH){
     transmit("PS", 1);
@@ -101,6 +121,7 @@ void detectButtonInput(){
   else if (automaticPump == false){
     transmit("PS", 0);
   }
+  
 }
 
 

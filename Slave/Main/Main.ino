@@ -10,7 +10,7 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // Set the LED and the pump to the pins
 int LEDPin = 13;
-int pumpPin = 12;
+int pumpPin = 6;
 
 // Strores the current values displayed on the LCD 
 // This is to minimise the refreshes of the LCD display to prevent flickering
@@ -73,6 +73,7 @@ void setup() {
 void loop() {
   // This is to prevent the arduino from crashing
   delay(100);
+  Serial.println(2);
 }
 
 // Turns the LEDs on/off and displays its status on the LCD
@@ -98,18 +99,28 @@ void setPumpState(bool state) {
   if (state){
     if (pumpLCD != 1){
       displayString("ON", 15, 0);
-      digitalWrite(pumpPin, HIGH);
-      pumpLCD = 1;
+-      pumpLCD = 1;
     }
   }
   else{
     if (pumpLCD != 0){
       displayString("OFF", 15, 0);
-      digitalWrite(pumpPin, LOW);
       pumpLCD = 0;
     }
   }
 }
+
+void controlPump(int pumpState){
+  if (pumpState == LOW){
+    
+  }
+  else{
+    digitalWrite(pumpPin, LOW);
+  }
+}
+
+
+
 
 //Turns the String into a constant char so it can be displayed on the LCD
 void displayValue(String value, int collumn, int row){
@@ -146,8 +157,10 @@ void processCommand(String command) {
     //Checks if the pump state is on or off
     if (command.substring(2, 3) == "1") {
       setPumpState(true);
+      digitalWrite(pumpPin, HIGH);
     } else {
       setPumpState(false);
+      digitalWrite(pumpPin, LOW);
     }
   }
   //Checks if the command is a light value command
@@ -172,10 +185,11 @@ void processCommand(String command) {
 void receiveEvent(int bytes) {
   //This function is called when the arduino recieves a transmission
   String data = "";
+  Serial.println(1);
   while(Wire.available() > 0) {
     char c = Wire.read(); //Reads the data from the master
     data.concat(c); //Adds the data to the string
   }
-  //Serial.println(data); //Prints the data to the serial monitor
+  Serial.println(data); //Prints the data to the serial monitor
   processCommand(data); //Processes the command
 }
