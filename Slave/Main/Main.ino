@@ -80,16 +80,16 @@ void setLightState(bool state) {
   if (state){
     if (LEDLCD != 1){
       displayString("ON", 6, 0);
-      digitalWrite(LEDPin, LOW); // Some reason HIGH and LOW are reversed for LEDS?
       LEDLCD = 1;
     }
+    digitalWrite(LEDPin, LOW); // Some reason HIGH and LOW are reversed for LEDS?
   }
   else{
     if (LEDLCD != 0){
       displayString("OFF", 6, 0);
-      digitalWrite(LEDPin, HIGH);
       LEDLCD = 0;
     }
+    digitalWrite(LEDPin, HIGH);
   }
 }
 
@@ -98,16 +98,16 @@ void setPumpState(bool state) {
   if (state){
     if (pumpLCD != 1){
       displayString("ON", 15, 0);
-      digitalWrite(pumpPin, HIGH);
       pumpLCD = 1;
     }
+    digitalWrite(pumpPin, HIGH);
   }
   else{
     if (pumpLCD != 0){
       displayString("OFF", 15, 0);
-      digitalWrite(pumpPin, LOW);
       pumpLCD = 0;
     }
+    digitalWrite(pumpPin, LOW);
   }
 }
 
