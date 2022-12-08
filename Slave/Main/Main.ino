@@ -115,16 +115,16 @@ void setState(bool state, int outputLCD, int outputPin, int collumn){
   if (state){
     if (outputLCD != 1){
       displayString("ON", collumn, 0);
-      digitalWrite(outputPin, HIGH);
       outputLCD = 1;
     }
+    digitalWrite(outputPin, HIGH);
   }
   else{
     if (outputLCD != 0){
       displayString("OFF", collumn, 0);
-      digitalWrite(outputPin, LOW);
       outputLCD = 0;
     }
+    digitalWrite(outputPin, LOW);
   }
 }
 
@@ -164,12 +164,9 @@ void processCommand(String command) {
   if (command.substring(0, 2) == "PS") {
     //Checks if the pump state is on or off
     if (command.substring(2, 3) == "1") {
-      setState(true, pumpLCD, LEDPin, 
-      
-      
-      )
+      setState(true, pumpLCD, pumpPin, 15);
     } else {
-      setPumpState(false);
+      setState(false, pumpLCD, pumpPin, 15);
     }
   }
   //Checks if the command is a light value command
