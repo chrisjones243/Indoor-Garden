@@ -72,7 +72,7 @@ void setup() {
 
 void loop() {
   // This is to prevent the arduino from crashing
-  delay(100);
+  delay(10);
 }
 
 // Turns the LEDs on/off and displays its status on the LCD
@@ -111,8 +111,8 @@ void setPumpState(bool state) {
   }
 }
 
-void setState(int state, int outputLCD, int outputPin, int collumn){
-  if (state == 1){
+void setState(String state, int outputLCD, int outputPin, int collumn){
+  if (state == "1"){
     if (outputLCD != 1){
       displayString("ON", collumn, 0);
       outputLCD = 1;
@@ -131,9 +131,10 @@ void setState(int state, int outputLCD, int outputPin, int collumn){
 //Turns the String into a constant char so it can be displayed on the LCD
 void displayValue(String value, int collumn, int row, int outputLCD){
   const char* strValue = value.c_str();
-  if (outputLCD != value){
+  int intValue = value.toInt();
+  if (outputLCD != intValue){
     displayString(strValue, collumn, row);
-    outputLCD = value;
+    outputLCD = intValue;
   }
   
 }
@@ -155,9 +156,9 @@ void displayString(const char string[], int collumn, int row){
 void processCommand(String command) {
   //Checks if the command is a light state command
   String mode = command.substring(0, 2);
-  String value = command.substring(2).toInt();
+  String value = command.substring(2);
   if (mode == "LS") {
-      setState(value , lightLCD, LEDPin, 6);
+      setState(value, lightLCD, LEDPin, 6);
   }
   //Checks if the command is a pump state command
   else if (mode == "PS") {
@@ -176,6 +177,9 @@ void processCommand(String command) {
   }
 }
 
+void refreshLCD(){
+  
+}
 // Makes sure the instrunction or message recieved is processed one at a time
 void receiveEvent(int bytes) {
   //This function is called when the arduino recieves a transmission
