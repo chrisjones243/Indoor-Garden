@@ -74,25 +74,6 @@ void loop() {
   delay(100);
 }
 
-
-// Turns the LEDs on/off and displays its status on the LCD
-void setLightState(bool state) {
-  if (state){
-    if (LEDLCD != 1){
-      displayString("ON", 6, 0);
-      LEDLCD = 1;
-    }
-    digitalWrite(LEDPin, LOW); // Some reason HIGH and LOW are reversed for LEDS?
-  }
-  else{
-    if (LEDLCD != 0){
-      displayString("OFF", 6, 0);
-      LEDLCD = 0;
-    }
-    digitalWrite(LEDPin, HIGH);
-  }
-}
-
 void setState(String state, int outputLCD, int outputPin, int collumn){
   if (state == "1"){
     if (outputLCD != 1){
@@ -107,7 +88,6 @@ void setState(String state, int outputLCD, int outputPin, int collumn){
     displayString("OFF", collumn, 0);
     digitalWrite(outputPin, LOW);
   }
-  //refresh();
 }
 
 //Turns the String into a constant char so it can be displayed on the LCD
