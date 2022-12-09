@@ -14,8 +14,8 @@ int pumpPin = 12;
 
 // Strores the current values displayed on the LCD 
 // This is to minimise the refreshes of the LCD display to prevent flickering
-int lightLCD = 101;
-int moistureLCD = 101;
+char lightLCD[] = "101";
+char moistureLCD[] = "101";
 int LEDLCD = 0; // This is not a constant
 int pumpLCD = 0;
 
@@ -71,9 +71,9 @@ void setup() {
 }
 
 void loop() {
-  // This is to prevent the arduino from crashing
-  delay(10);
+  delay(100);
 }
+
 
 // Turns the LEDs on/off and displays its status on the LCD
 void setLightState(bool state) {
@@ -93,48 +93,29 @@ void setLightState(bool state) {
   }
 }
 
-// Turns the water Solenoid on/off and displays its status on the LCD
-void setPumpState(bool state) {
-  if (state){
-    if (pumpLCD != 1){
-      displayString("ON", 15, 0);
-      pumpLCD = 1;
-    }
-    digitalWrite(pumpPin, HIGH);
-  }
-  else{
-    if (pumpLCD != 0){
-      displayString("OFF", 15, 0);
-      pumpLCD = 0;
-    }
-    digitalWrite(pumpPin, LOW);
-  }
-}
-
 void setState(String state, int outputLCD, int outputPin, int collumn){
   if (state == "1"){
     if (outputLCD != 1){
-      displayString("ON", collumn, 0);
+      
       outputLCD = 1;
     }
+    displayString("ON", collumn, 0);
     digitalWrite(outputPin, HIGH);
   }
   else{
-    if (outputLCD != 0){
-      displayString("OFF", collumn, 0);
-      outputLCD = 0;
-    }
+    outputLCD = 0;
+    displayString("OFF", collumn, 0);
     digitalWrite(outputPin, LOW);
   }
+  //refresh();
 }
 
 //Turns the String into a constant char so it can be displayed on the LCD
-void displayValue(String value, int collumn, int row, int outputLCD){
+void displayValue(String value, int collumn, int row, char outputLCD[]){
   const char* strValue = value.c_str();
-  int intValue = value.toInt();
-  if (outputLCD != intValue){
+  if (outputLCD != strValue){
     displayString(strValue, collumn, row);
-    outputLCD = intValue;
+    outputLCD = strValue;
   }
   
 }
@@ -177,9 +158,6 @@ void processCommand(String command) {
   }
 }
 
-void refreshLCD(){
-  
-}
 // Makes sure the instrunction or message recieved is processed one at a time
 void receiveEvent(int bytes) {
   //This function is called when the arduino recieves a transmission
@@ -188,6 +166,6 @@ void receiveEvent(int bytes) {
     char c = Wire.read(); //Reads the data from the master
     data.concat(c); //Adds the data to the string
   }
-  //Serial.println(data); //Prints the data to the serial monitor
+  Serial.println(data); //Prints the data to the serial monitor
   processCommand(data); //Processes the command
 }
