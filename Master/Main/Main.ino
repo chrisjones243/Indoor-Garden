@@ -6,14 +6,14 @@
 
 int buttonPin = 6;
 int LDRPin = 0; // Sets the photoresistor to a pin
-int moisturePin = 1; // Sets the photoresistor to a pin
+int moisturePin = 1; // Sets the moisture to a pin
 
-int time = 0; // Keeps track of how many seconds has passed
-int buttonState; // Stores the state of the button, if it is HIGH or LOW
+int time = 0; // The unit is in seconds
+int buttonState; 
 int previousTime = 0; // Stores an instance of the time so it can be compared with the current time
 int automaticPump = false; // A flag to check if checkMoistureLevel() is currently transmitting a signal to turn the pump on
 
-// NOTE: When transmitting data, to the slave device, the master device will need to send these values:
+// NOTE: When transmitting data, to the slave device, the master device will need to send these values in a character array:
 // LS[boolean] = lightState, the state of the light
 // PS[boolean] = pumpState, the state of the pump
 // LV[int] = lightval, the value of the light
@@ -24,17 +24,16 @@ int automaticPump = false; // A flag to check if checkMoistureLevel() is current
 // PS0 = pumpState is false, and will turn off the pump
 // LV100 = lightval is 100, and will display the value 100 on the LCD
 // 
-// **Can code on slave-output branch**
-
 
 void setup() {
-  Wire.begin(); // Starts I2C communication
-  Serial.begin(9600); // Serial communication
+  // Starts I2C communication
+  Wire.begin();
+  // Starts Serial communication
+  Serial.begin(9600); 
 }
 
 // Each loop in the program is called every second
 void loop() {
-  Serial.println(time); // Prints the time to the serial monitor so we know when the functions will do their tasks
   // Transmits the light and moisture level to the slave
   transmit("MV", readValue(moisturePin)); 
   transmit("LV", readValue(LDRPin));
@@ -56,7 +55,6 @@ void transmit(char mode[], int value){
   sprintf(strValue, "%d", value);
   strcpy(message, mode);
   strcat(message, strValue);
-  //Serial.println(message);
   Wire.beginTransmission(8);
   Wire.write(message);
   Wire.endTransmission();
