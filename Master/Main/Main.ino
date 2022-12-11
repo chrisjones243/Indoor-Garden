@@ -80,7 +80,7 @@ void checkLightLevel(){
 // If the pump needs to be open, automaticPump is set to true so detectButtonInput() does not affect the master communication
 void checkMoistureLevel(){
   if (time % 8== 0){
-    if (readValue(moisturePin) >= 40){
+    if (readValue(moisturePin) >= 60){
       previousTime = time;
       automaticPump = true;
       transmit("PS", 1);
