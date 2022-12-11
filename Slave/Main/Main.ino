@@ -53,8 +53,18 @@ void setup() {
   // Sets the LED pin to output 
   pinMode(LEDPin, OUTPUT);
   pinMode(pumpPin, OUTPUT);
-  digitalWrite(LEDPin, HIGH); // Some reason HIGH and LOW are reversed for LEDS?
-  // Initialises the display on the the LCD
+  initialise();
+  //Starts the serial to output on the serial monitor
+  //This is done to observe what signal the slave is receiving
+  Serial.begin(9600);
+}
+
+void loop() {
+  delay(100);
+}
+
+// Initialises the display on the the LCD
+void initialise(){
   lcd.begin(16, 2);
   lcd.print("LED:OFF");
   lcd.setCursor(8, 0);
@@ -65,20 +75,47 @@ void setup() {
   lcd.setCursor(8, 1);
   lcd.write(byte(1));
   lcd.print(":");
-  //Starts the serial to output on the serial monitor
-  //This is done to observe what signal the slave is receiving
-  Serial.begin(9600);
 }
 
-void loop() {
-  digitalWrite(LEDPin, HIGH);
-  delay(100);
+// Makes sure the messages recieved is processed one at a time
+// This function is called when the arduino recieves a transmission from the master
+void receiveEvent(int bytes) {
+  String data = "";
+  while(Wire.available() > 0) {
+    char c = Wire.read();
+    data.concat(c);
+  }
+  //Serial.println(data); // Prints the data to the serial monitor for debugging
+  processCommand(data);
 }
 
-void setState(String state, int outputLCD, int outputPin, int collumn){
-  if (state == "1"){
-    if (outputLCD != 1){
-      
+// Decodes the message from the master Arduino to find out what process it needs to complete
+void processCommand(String command) {
+  String mode = command.substring(0, 2);
+  String value = command.substring(2);
+  // Checks if the command to control the LEDs
+  if (mode == "LS") {
+      setState(value, lightLCD, LEDPin, 6);
+  }
+  // Checks if the command is to turn the pump on or off
+  else if (mode == "PS") {
+     setState(value, pumpLCD, pumpPin, 15);
+  }
+  // Checks if the command is to display the light level
+  else if (mode == "LV") {
+    displayValue(value, 5, 1, lightLCD); 
+  }
+  // Checks if the command is to display the moisture level
+  else if (mode == "MV") {
+    displayValue(value, 12, 1, moistureLCD);
+  }
+}
+
+// Sets the output component to HIGH or LOW based on the value of the nextState parameter
+// Also prints out the status of the component on the LCD using displayString
+void setState(String nextState, int outputLCD, int outputPin, int collumn){
+  if (nextState == "1"){
+    if (outputLCD != 1){     
       outputLCD = 1;
     }
     displayString("ON", collumn, 0);
@@ -91,7 +128,7 @@ void setState(String state, int outputLCD, int outputPin, int collumn){
   }
 }
 
-//Turns the String into a constant char so it can be displayed on the LCD
+// Turns the String into a constant char so it can be displayed on the LCD
 void displayValue(String value, int collumn, int row, char outputLCD[]){
   const char* strValue = value.c_str();
   if (outputLCD != strValue){
@@ -106,47 +143,11 @@ void displayString(const char string[], int collumn, int row){
   lcd.setCursor(collumn - 2, row);
   lcd.print("   ");
   lcd.setCursor(collumn, row);
-  // Prints the string from right to left (e.g "  56" instead of "56 ")
+  // Prints the string from right to left (e.g " 56" instead of "56 ")
   lcd.rightToLeft();
   // Prints the last value first from right to left
   for (int i = strlen(string) - 1; i >= 0; i --){
     lcd.print(string[i]);
   }
   lcd.leftToRight();
-}
-
-void processCommand(String command) {
-  //Checks if the command is a light state command
-  String mode = command.substring(0, 2);
-  String value = command.substring(2);
-  if (mode == "LS") {
-      setState(value, lightLCD, LEDPin, 6);
-  }
-  //Checks if the command is a pump state command
-  else if (mode == "PS") {
-    //Checks if the pump state is on or off
-     setState(value, pumpLCD, pumpPin, 15);
-  }
-  //Checks if the command is a light value command
-  else if (mode == "LV") {
-    // Only displays the recieved value if it is different to the currently displayed value on the LCD
-    displayValue(value, 5, 1, lightLCD); 
-  }
-  //Checks if the command is a moisture value command
-  else if (mode == "MV") {
-    // Similar process to "LV" above
-    displayValue(value, 12, 1, moistureLCD);
-  }
-}
-
-// Makes sure the instrunction or message recieved is processed one at a time
-void receiveEvent(int bytes) {
-  //This function is called when the arduino recieves a transmission
-  String data = "";
-  while(Wire.available() > 0) {
-    char c = Wire.read(); //Reads the data from the master
-    data.concat(c); //Adds the data to the string
-  }
-  Serial.println(data); //Prints the data to the serial monitor
-  processCommand(data); //Processes the command
 }
