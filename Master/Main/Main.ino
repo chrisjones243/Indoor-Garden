@@ -63,7 +63,7 @@ void transmit(char mode[], int value){
 
 // Communicates the slave to switch the light bulb on or off depending on the light level
 void checkLightLevel(){
-  // Only checks the light level every 10 seconds 
+  // Checks the light level every 3 seconds 
   if (time % 3 == 0){
     if(readValue(LDRPin) <= 3){
       transmit("LS", 1);
