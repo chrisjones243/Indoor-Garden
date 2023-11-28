@@ -1,2 +1,3 @@
-# I2C 
- This is to test I2C communication between the arduinos
+# What is it?
+
+This is code for a project to create a small garden for indoor's
